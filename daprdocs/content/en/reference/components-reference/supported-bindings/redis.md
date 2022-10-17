@@ -35,12 +35,12 @@ The above example uses secrets as plain strings. It is recommended to use a secr
 
 ## Spec metadata fields
 
-| Field              | Required | Binding support |  Details | Example |
-|--------------------|:--------:|------------|-----|---------|
-| redisHost | Y | Output |  The Redis host address | `"localhost:6379"` |
-| redisPassword | Y | Output | The Redis password | `"password"` |
-| redisUsername | N | Output | Username for Redis host. Defaults to empty. Make sure your redis server version is 6 or above, and have created acl rule correctly. | `"username"` |
-| enableTLS | N | Output |  If the Redis instance supports TLS with public certificates it can be configured to enable or disable TLS. Defaults to `"false"` | `"true"`, `"false"` |
+| Field         | Required | Binding support | Details                                  | Example             |
+| ------------- | :------: | --------------- | ---------------------------------------- | ------------------- |
+| redisHost     |    Y     | Output          | The Redis host address                   | `"localhost:6379"`  |
+| redisPassword |    Y     | Output          | The Redis password                       | `"password"`        |
+| redisUsername |    N     | Output          | Username for Redis host. Defaults to empty. Make sure your redis server version is 6 or above, and have created acl rule correctly. | `"username"`        |
+| enableTLS     |    N     | Output          | If the Redis instance supports TLS with public certificates it can be configured to enable or disable TLS. Defaults to `"false"` | `"true"`, `"false"` |
 | failover           | N | Output         | Property to enabled failover configuration. Needs sentinalMasterName to be set. Defaults to `"false"` | `"true"`, `"false"`
 | sentinelMasterName | N | Output         | The sentinel master name. See [Redis Sentinel Documentation](https://redis.io/docs/reference/sentinel-clients/) | `""`,  `"127.0.0.1:6379"`
 | redeliverInterval  | N | Output        | The interval between checking for pending messages to redelivery. Defaults to `"60s"`. `"0"` disables redelivery. | `"30s"`
@@ -80,6 +80,54 @@ You can store a record in Redis using the `create` operation. This sets a key to
   "data": {
     "Hello": "World",
     "Lorem": "Ipsum"
+  }
+}
+```
+
+### Response
+
+An HTTP 204 (No Content) and empty body is returned if successful.
+
+- `get`
+
+You can get a record in Redis using the `get` operation. This get a key where you set.
+
+### Request
+
+```json
+{
+  "operation": "get",
+  "metadata": {
+    "key": "key1"
+  },
+  "data": {
+  }
+}
+```
+
+### Response
+
+```json
+{
+  "data": {
+    "Hello": "World",
+    "Lorem": "Ipsum"
+  }
+}
+```
+
+- `delete`
+
+You can delete multiple records in Redis using the `delete` operation. There is at least one key in metadata, {key: xxx}, if there are more than one, add key1, key2...
+
+### Request
+
+```json
+{
+  "operation": "delete",
+  "metadata": {
+    "key": "key_a",
+    "key1" : "key_b"
   }
 }
 ```
@@ -130,7 +178,7 @@ You can use [Helm](https://helm.sh/) to quickly create a Redis instance in our K
         - name: redisPassword
           value: "lhDOkwTlp0"
     ```
-{{% /codetab %}}
+    {{% /codetab %}}
 
 {{% codetab %}}
 [AWS Redis](https://aws.amazon.com/redis/)
